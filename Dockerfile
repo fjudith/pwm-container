@@ -7,7 +7,7 @@ ENV VERSION=pwm-1.8.0-SNAPSHOT-2017-07-10T03:44:47Z-pwm-bundle
 ENV PWM_HOME=${CATALINA_HOME}/webapps/pwm
 
 RUN apt-get update -y && \
-    apt-get install -y -no-install-recommends wget unzip xmlstarlet
+    apt-get install -y --no-install-recommends wget unzip xmlstarlet
 
 # Create pwm user
 RUN groupadd --system --gid 1234 pwm && \
