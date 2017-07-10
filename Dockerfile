@@ -18,8 +18,8 @@ RUN cd /tmp && \
     wget https://www.pwm-project.org/artifacts/pwm/${VERSION}.zip && \
     unzip ${VERSION}.zip -d /tmp/pwm && \
     unzip /tmp/pwm/pwm.war -d  ${PWM_HOME}
-    
-RUN    chmod a+x ${PWM_HOME}/WEB_INF/command.sh
+
+RUN chmod 755 ${PWM_HOME}/WEB_INF/command.sh
 
 # Update server.xml to set pwm webapp to root
 RUN cd $CATALINA_HOME && \
