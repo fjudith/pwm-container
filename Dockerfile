@@ -14,7 +14,7 @@ RUN groupadd --system --gid 1234 pwm && \
 	useradd --system --create-home --shell /bin/bash --gid 1234 --uid 1234 pwm
 
 # Download & deploy pwm.war
-RUN cd /tmp &&
+RUN cd /tmp && \
     wget https://www.pwm-project.org/artifacts/pwm/${VERSION}.zip && \
     unzip ${VERSION}.zip -d /tmp/pwm && \
     unzip /tmp/pwm/pwm.war -d  ${PWM_HOME} && \
