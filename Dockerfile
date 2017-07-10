@@ -20,7 +20,6 @@ RUN cd /tmp && \
     unzip /tmp/pwm/pwm.war -d  ${PWM_HOME} && \
     chmod a+x ${PWM_HOME}/WEB-INF/command.sh
 
-
 # Update server.xml to set pwm webapp to root
 RUN cd $CATALINA_HOME && \
     xmlstarlet ed \
@@ -41,8 +40,13 @@ RUN rm -rf \
     /tmp/${VERSION}.zip \
     /tmp/pwm
 
+# Deploy EntryPoint
+COPY docker-entrypoint.sh /sbin/
+RUN chmod +x /sbin/docker-entrypoint.sh
+
 # Fix permissions
 RUN chown -R pwm:pwm $CATALINA_HOME
+
 
 USER pwm
 
