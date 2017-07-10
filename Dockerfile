@@ -5,9 +5,15 @@ MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
 ENV VERSION=pwm-1.8.0-SNAPSHOT-2017-07-10T03:44:47Z-pwm-bundle
 
 ENV PWM_HOME=${CATALINA_HOME}/webapps/pwm
+ENV PWM_APPLICATIONPATH=/usr/share/pwm
 
+# Install additional packages
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends wget unzip xmlstarlet
+
+# Create configuration directory
+
+RUN mkdir -p $PWM_APPLICATIONPATH
 
 # Create pwm user
 RUN groupadd --system --gid 1234 pwm && \
@@ -45,7 +51,7 @@ COPY docker-entrypoint.sh /sbin/
 RUN chmod +x /sbin/docker-entrypoint.sh
 
 # Fix permissions
-RUN chown -R pwm:pwm $CATALINA_HOME
+RUN chown -R pwm:pwm $CATALINA_HOME $PWM_APPLICATIONPATH
 
 USER pwm
 
