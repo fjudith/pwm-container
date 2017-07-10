@@ -13,17 +13,14 @@ RUN apt-get update -y && \
 RUN groupadd --system --gid 1234 pwm && \
 	useradd --system --create-home --shell /bin/bash --gid 1234 --uid 1234 pwm
 
-# Fix permissions
-RUN chown -R pwm:pwm $CATALINA_HOME
 
-USER pwm
 
 # Download & deploy pwm.war
 RUN cd /tmp && \
     wget https://www.pwm-project.org/artifacts/pwm/${VERSION}.zip && \
     unzip ${VERSION}.zip -d /tmp/pwm && \
     unzip /tmp/pwm/pwm.war -d  ${PWM_HOME} && \
-    chmod 755 ${PWM_HOME}/WEB-INF/command.sh
+    chmod a+x ${PWM_HOME}/WEB-INF/command.sh
 
 
 # Update server.xml to set pwm webapp to root
@@ -45,6 +42,11 @@ RUN rm -rf \
     /var/lib/apt/lists/* \
     /tmp/${VERSION}.zip \
     /tmp/pwm
+
+# Fix permissions
+RUN chown -R pwm:pwm $CATALINA_HOME
+
+USER pwm
 
 WORKDIR $CATALINA_HOME
 
