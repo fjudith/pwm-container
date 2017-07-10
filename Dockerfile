@@ -13,6 +13,11 @@ RUN apt-get update -y && \
 RUN groupadd --system --gid 1234 pwm && \
 	useradd --system --create-home --shell /bin/bash --gid 1234 --uid 1234 pwm
 
+# Fix permissions
+RUN chown -R pwm:pwm $CATALINA_HOME
+
+USER pwm
+
 # Download & deploy pwm.war
 RUN cd /tmp && \
     wget https://www.pwm-project.org/artifacts/pwm/${VERSION}.zip && \
@@ -41,13 +46,10 @@ RUN rm -rf \
     /tmp/${VERSION}.zip \
     /tmp/pwm
 
-# Fix permissions
-RUN chown -R pwm:pwm $CATALINA_HOME
-
-USER pwm
-
 WORKDIR $CATALINA_HOME
 
 EXPOSE 8080
+
+ENTRYPOINT ["/sbin/docker-entrypoint"]
 
 CMD ["catalina.sh", "run"]
