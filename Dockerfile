@@ -54,6 +54,6 @@ WORKDIR $CATALINA_HOME
 
 EXPOSE 8080
 
-ENTRYPOINT ["/sbin/docker-entrypoint"]
+ENTRYPOINT ["/sbin/docker-entrypoint.sh"]
 
 CMD ["catalina.sh", "run"]
