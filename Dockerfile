@@ -47,7 +47,6 @@ RUN chmod +x /sbin/docker-entrypoint.sh
 # Fix permissions
 RUN chown -R pwm:pwm $CATALINA_HOME
 
-
 USER pwm
 
 WORKDIR $CATALINA_HOME
