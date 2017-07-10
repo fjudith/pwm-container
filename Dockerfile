@@ -61,7 +61,8 @@ COPY docker-entrypoint.sh /sbin/
 RUN chmod +x /sbin/docker-entrypoint.sh
 
 # Fix permissions
-#RUN chown -R pwm:pwm $CATALINA_HOME $PWM_APPLICATIONPATH
+#RUN chown -R pwm. $CATALINA_HOME
+#RUN chown -R pwm. $PWM_APPLICATIONPATH
 
 #USER pwm
 
