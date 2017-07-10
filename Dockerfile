@@ -6,6 +6,7 @@ ENV VERSION=pwm-1.8.0-SNAPSHOT-2017-07-10T03:44:47Z-pwm-bundle
 ENV MYSQL_DRIVER_VERSION=5.1.42
 ENV POSTGRES_DRIVER_VERSION=42.1.1
 ENV MONGODB_DRIVER_VERSION=3.4.2
+
 ENV PWM_HOME=${CATALINA_HOME}/webapps/pwm
 ENV PWM_APPLICATIONPATH=/usr/share/pwm
 
@@ -35,7 +36,6 @@ RUN cd ${CATALINA_HOME}/lib && \
     curl -O https://jdbc.postgresql.org/download/postgresql-${POSTGRES_DRIVER_VERSION}.jar && \
     curl -O https://oss.sonatype.org/content/repositories/releases/org/mongodb/mongo-java-driver/${MONGODB_DRIVER_VERSION}/mongo-java-driver-${MONGODB_DRIVER_VERSION}.jar
 
-
 # Update server.xml to set pwm webapp to root
 RUN cd $CATALINA_HOME && \
     xmlstarlet ed \
@@ -61,9 +61,9 @@ COPY docker-entrypoint.sh /sbin/
 RUN chmod +x /sbin/docker-entrypoint.sh
 
 # Fix permissions
-RUN chown -R pwm:pwm $CATALINA_HOME $PWM_APPLICATIONPATH
+#RUN chown -R pwm:pwm $CATALINA_HOME $PWM_APPLICATIONPATH
 
-USER pwm
+#USER pwm
 
 WORKDIR $CATALINA_HOME
 
