@@ -1,5 +1,5 @@
 #!/bin/bash
 
-set -e
+#set -e
 
 rm -rf $CATALINA_HOME/work/*
