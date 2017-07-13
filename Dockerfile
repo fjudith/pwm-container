@@ -27,7 +27,7 @@ RUN groupadd --system --gid 1234 pwm && \
 # Download & deploy pwm.war
 RUN cd /tmp && \
     wget https://www.pwm-project.org/artifacts/pwm/pwm-${VERSION}-pwm-bundle.zip && \
-    unzip ${VERSION}.zip -d /tmp/pwm && \
+    unzip pwm-${VERSION}-pwm-bundle.zip -d /tmp/pwm && \
     unzip /tmp/pwm/pwm.war -d  ${PWM_HOME} && \
     chmod a+x ${PWM_HOME}/WEB-INF/command.sh
 
@@ -55,7 +55,7 @@ RUN cd $CATALINA_HOME && \
 # Cleanup
 RUN rm -rf \
     /var/lib/apt/lists/* \
-    /tmp/${VERSION}.zip \
+    /tmp/pwm-${VERSION}-pwm-bundle.zip \
     /tmp/pwm
 
 # Deploy EntryPoint
