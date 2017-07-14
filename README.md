@@ -12,7 +12,7 @@ The Dockerfile builds from `Tomcat:8-jre8` see https://hub.docker.com/_/tomcat/
 
 # Version
 
-[`1.8.0-SNAPSHOT-2017-07-11T08:10:38Z`, `latest`](https://gihub.com/fjudith/pwm/tree/master)
+[`1.8.0-SNAPSHOT-2017-07-13T08:33:05Z`, `latest`](https://gihub.com/fjudith/pwm/tree/master)
 
 # Quick Start 
 
