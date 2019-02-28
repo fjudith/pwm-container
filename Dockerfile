@@ -1,8 +1,8 @@
 FROM tomcat:jre8
 
 MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
-ENV VERSION=1.8.0-SNAPSHOT-2018-02-01T20:37:06Z-release-bundle
-ENV ARCHIVE_NAME=pwm-${VERSION}-release-bundle.zip
+ENV SNAPSHOT=2019-02-07T13_56_10Z
+ENV VERSION=1.8.0-SNAPSHOT
 ENV MYSQL_DRIVER_VERSION=5.1.42
 ENV POSTGRES_DRIVER_VERSION=42.1.1
 ENV MONGODB_DRIVER_VERSION=3.4.2
@@ -25,9 +25,8 @@ RUN groupadd --system --gid 1234 pwm && \
 
 # Download & deploy pwm.war
 RUN cd /tmp && \
-    wget https://www.pwm-project.org/artifacts/pwm/${ARCHIVE_NAME} && \
-    unzip ${ARCHIVE_NAME} -d /tmp/pwm && \
-    unzip /tmp/pwm/pwm.war -d  ${PWM_HOME} && \
+    wget https://www.pwm-project.org/artifacts/pwm/{$SNAPSHOT}/pwm-${VERSION}.war && \
+    unzip /tmp/pwm/pwm-${VERSION}.war -d  ${PWM_HOME} && \
     chmod a+x ${PWM_HOME}/WEB-INF/command.sh
 
 # Download database drivers
@@ -54,7 +53,6 @@ RUN cd $CATALINA_HOME && \
 # Cleanup
 RUN rm -rf \
     /var/lib/apt/lists/* \
-    /tmp/pwm-${VERSION}-pwm-bundle.zip \
     /tmp/pwm
 
 # Deploy EntryPoint
