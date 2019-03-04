@@ -1,12 +1,12 @@
 FROM tomcat:jre8
 
 MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
-ENV VERSION=1.8.0-SNAPSHOT-2018-02-01T20:37:06Z-release-bundle
-ENV ARCHIVE_NAME=pwm-${VERSION}-release-bundle.zip
-ENV MYSQL_DRIVER_VERSION=5.1.42
-ENV POSTGRES_DRIVER_VERSION=42.1.1
-ENV MONGODB_DRIVER_VERSION=3.4.2
-ENV MARIADB_DRIVER_VERSION=2.0.3
+ENV SNAPSHOT=2019-03-04T08_01_08Z
+ENV VERSION=1.8.0-SNAPSHOT
+ENV MYSQL_DRIVER_VERSION=8.0.15
+ENV POSTGRES_DRIVER_VERSION=42.2.5
+ENV MONGODB_DRIVER_VERSION=3.9.1
+ENV MARIADB_DRIVER_VERSION=2.4.0
 
 ENV PWM_HOME=${CATALINA_HOME}/webapps/pwm
 ENV PWM_APPLICATIONPATH=/usr/share/pwm
@@ -25,9 +25,8 @@ RUN groupadd --system --gid 1234 pwm && \
 
 # Download & deploy pwm.war
 RUN cd /tmp && \
-    wget https://www.pwm-project.org/artifacts/pwm/${ARCHIVE_NAME} && \
-    unzip ${ARCHIVE_NAME} -d /tmp/pwm && \
-    unzip /tmp/pwm/pwm.war -d  ${PWM_HOME} && \
+    wget https://www.pwm-project.org/artifacts/pwm/${SNAPSHOT}/pwm-${VERSION}.war && \
+    unzip /tmp/pwm-${VERSION}.war -d  ${PWM_HOME} && \
     chmod a+x ${PWM_HOME}/WEB-INF/command.sh
 
 # Download database drivers
@@ -54,8 +53,7 @@ RUN cd $CATALINA_HOME && \
 # Cleanup
 RUN rm -rf \
     /var/lib/apt/lists/* \
-    /tmp/pwm-${VERSION}-pwm-bundle.zip \
-    /tmp/pwm
+    /tmp/pwm-${VERSION}.war
 
 # Deploy EntryPoint
 COPY docker-entrypoint.sh /sbin/
