@@ -50,6 +50,14 @@ RUN cd $CATALINA_HOME && \
     -s '/Server/Service/Engine/Host/Context[@path="/ROOT"]' -t 'elem' -n 'WatchedResource' -v 'WEB-INF/web.xml' \
     conf/server.xml
 
+# Update context.xml to allow redirections
+RUN cd $CATALINA_HOME && \
+    xmlstarlet ed \
+    -P -S -L \
+    -i '/Context' -t 'elem' -n 'Valve' \
+    -i '/Context' -t 'attr' -n 'classname' -v "org.apache.catalina.valves.rewrite.RewriteValve" \
+    conf/context.xml
+
 # Cleanup
 RUN rm -rf \
     /var/lib/apt/lists/* \
