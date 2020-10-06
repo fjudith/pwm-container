@@ -1,8 +1,7 @@
-FROM tomcat:jre8
+FROM docker.io/amd64/tomcat:jre8
 
-MAINTAINER Florian JUDITH <florian.judith.b@gmail.com>
-ENV SNAPSHOT=2019-03-04T08_01_08Z
-ENV VERSION=1.8.0-SNAPSHOT
+LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
+ARG VERSION=1.9.0
 ENV MYSQL_DRIVER_VERSION=8.0.15
 ENV POSTGRES_DRIVER_VERSION=42.2.5
 ENV MONGODB_DRIVER_VERSION=3.9.1
@@ -11,23 +10,24 @@ ENV MARIADB_DRIVER_VERSION=2.4.0
 ENV PWM_HOME=${CATALINA_HOME}/webapps/pwm
 ENV PWM_APPLICATIONPATH=/usr/share/pwm
 
-# Install additional packages
-RUN apt-get update -y && \
-    apt-get install -y --no-install-recommends wget unzip xmlstarlet
-
-# Create configuration directory
-
-RUN mkdir -p $PWM_APPLICATIONPATH
-
 # Create pwm user
 RUN groupadd --system --gid 1234 pwm && \
 	useradd --system --create-home --shell /bin/bash --gid 1234 --uid 1234 pwm
 
-# Download & deploy pwm.war
-RUN cd /tmp && \
-    wget https://www.pwm-project.org/artifacts/pwm/${SNAPSHOT}/pwm-${VERSION}.war && \
-    unzip /tmp/pwm-${VERSION}.war -d  ${PWM_HOME} && \
-    chmod a+x ${PWM_HOME}/WEB-INF/command.sh
+RUN mkdir -p $PWM_APPLICATIONPATH
+
+# Install additional packages
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends wget unzip xmlstarlet && \
+    cd /tmp && \
+    wget https://www.pwm-project.org/artifacts/pwm/release/v${VERSION}/pwm.war && \
+    unzip /tmp/pwm.war -d  ${PWM_HOME} && \
+    rm -f /tmp/pwm.war && \
+    chmod a+x ${PWM_HOME}/WEB-INF/command.sh && \
+    apt-get remove -y --purge wget unzip && \
+    apt-get autoremove -y --purge && \
+    apt-get clean && \
+    rm -r /var/lib/apt/lists/*
 
 # Download database drivers
 RUN cd ${CATALINA_HOME}/lib && \
@@ -49,11 +49,6 @@ RUN cd $CATALINA_HOME && \
     -s '/Server/Service/Engine/Host/Context[@path="/ROOT"]' -t 'attr' -n 'docBase' -v 'ROOT' \
     -s '/Server/Service/Engine/Host/Context[@path="/ROOT"]' -t 'elem' -n 'WatchedResource' -v 'WEB-INF/web.xml' \
     conf/server.xml
-
-# Cleanup
-RUN rm -rf \
-    /var/lib/apt/lists/* \
-    /tmp/pwm-${VERSION}.war
 
 # Deploy EntryPoint
 COPY docker-entrypoint.sh /sbin/
