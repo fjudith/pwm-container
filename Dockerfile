@@ -1,7 +1,7 @@
 FROM docker.io/amd64/tomcat:jre8
 
 LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
-ARG VERSION=1.9.0
+ARG VERSION=1.9.1
 ENV MYSQL_DRIVER_VERSION=8.0.15
 ENV POSTGRES_DRIVER_VERSION=42.2.5
 ENV MONGODB_DRIVER_VERSION=3.9.1
@@ -20,9 +20,9 @@ RUN mkdir -p $PWM_APPLICATIONPATH
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends wget unzip xmlstarlet && \
     cd /tmp && \
-    wget https://www.pwm-project.org/artifacts/pwm/release/v${VERSION}/pwm.war && \
-    unzip /tmp/pwm.war -d  ${PWM_HOME} && \
-    rm -f /tmp/pwm.war && \
+    wget https://www.pwm-project.org/artifacts/pwm/release/v${VERSION}/pwm-${VERSION}.war && \
+    unzip /tmp/pwm-${VERSION}.war -d  ${PWM_HOME} && \
+    rm -f /tmp/pwm-${VERSION}.war && \
     chmod a+x ${PWM_HOME}/WEB-INF/command.sh && \
     apt-get remove -y --purge wget unzip && \
     apt-get autoremove -y --purge && \
