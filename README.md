@@ -17,7 +17,7 @@ The Dockerfile builds from `Tomcat:8-jre8` see https://hub.docker.com/_/tomcat/
 Run the PWM image:
 
 ```bash
-docker run --rm -it --name=`pwm` -p 8080:8080 fjudith/pwm
+docker run --rm -it --name=pwm -p 8080:8080 fjudith/pwm
 ```
 
 NOTE: Please allow few seconds for the application to start, especially if populating the database for the first time.

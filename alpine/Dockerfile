@@ -1,4 +1,5 @@
-FROM docker.io/amd64/tomcat:jre8
+
+FROM tomcat:9-jre8-alpine
 
 LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
 ARG VERSION=1.9.1
@@ -11,23 +12,19 @@ ENV PWM_HOME=${CATALINA_HOME}/webapps/pwm
 ENV PWM_APPLICATIONPATH=/usr/share/pwm
 
 # Create pwm user
-RUN groupadd --system --gid 1234 pwm && \
-	useradd --system --create-home --shell /bin/bash --gid 1234 --uid 1234 pwm
+RUN addgroup -g 1234 pwm && \
+    adduser -D -u 1234 -G pwm pwm
 
 RUN mkdir -p $PWM_APPLICATIONPATH
 
 # Install additional packages
-RUN apt-get update -y && \
-    apt-get install -y --no-install-recommends wget unzip xmlstarlet && \
+RUN apk add --no-cache openjdk8 maven xmlstarlet curl wget unzip && \
     cd /tmp && \
     wget https://www.pwm-project.org/artifacts/pwm/release/v${VERSION}/pwm-${VERSION}.war && \
     unzip /tmp/pwm-${VERSION}.war -d  ${PWM_HOME} && \
     rm -f /tmp/pwm-${VERSION}.war && \
     chmod a+x ${PWM_HOME}/WEB-INF/command.sh && \
-    apt-get remove -y --purge wget unzip && \
-    apt-get autoremove -y --purge && \
-    apt-get clean && \
-    rm -r /var/lib/apt/lists/*
+    apk del --purge openjdk8 maven git patch
 
 # Download database drivers
 RUN cd ${CATALINA_HOME}/lib && \
