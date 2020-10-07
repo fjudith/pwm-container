@@ -1,5 +1,3 @@
-ARG VERSION
-
 FROM docker.io/amd64/maven:3-openjdk-11 AS builder
 
 RUN apt-get update -y && apt-get  -y --no-install-recommends install git && \
@@ -43,10 +41,10 @@ RUN apt-get update -y && \
     rm -r /var/lib/apt/lists/*
 
 # Retreive and install artifact from builder
-COPY --from=builder pwm/webapp/target/pwm-${VERSION}.war /tmp/pwm.war 
+COPY --from=builder pwm/webapp/target/pwm-*.war /tmp/pwm.war 
 
 RUN cd /tmp && \
-    unzip /tmp/pwm-.war -d  ${PWM_HOME} && \
+    unzip /tmp/pwm.war -d  ${PWM_HOME} && \
     rm -f /tmp/pwm.war && \
     chmod a+x ${PWM_HOME}/WEB-INF/command.sh
 
