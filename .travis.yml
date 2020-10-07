@@ -30,7 +30,7 @@ jobs:
       - docker run --name 'pwm' -d -p ${HTTP_PORT}:8080 -p ${HTTPS_PORT}:8443 ${REPO}:${VERSION}
       - sleep 10
       - docker logs pwm
-      - docker exec pwm /bin/bash -c "curl -i http://localhost:8080"
+      - curl -i http://localhost:${HTTP_PORT}
     after_success: 
       - echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
       - docker tag ${REPO}:${VERSION} ${REPO}:$TAG
@@ -46,7 +46,7 @@ jobs:
       - docker run --name "pwm-${BASE_IMAGE}" -d -p ${HTTP_PORT}:8080 -p ${HTTPS_PORT}:8443 ${REPO}:${VERSION}-${BASE_IMAGE}
       - sleep 10
       - docker logs pwm-${BASE_IMAGE}
-      - docker exec pwm-${BASE_IMAGE} /bin/bash -c "curl -i http://localhost:8080"
+      - curl -i http://localhost:${HTTP_PORT}
     after_success:
       - echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
       - docker tag ${REPO}:${VERSION}-${BASE_IMAGE} ${REPO}:${ALPINE_TAG}
