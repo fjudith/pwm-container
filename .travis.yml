@@ -14,8 +14,7 @@ services:
 before_install:
   # Get draw.io current latest version
   - wget https://raw.githubusercontent.com/pwm-project/pwm/master/pom.xml
-  # - export VERSION=`cat VERSION`
-  - export VERSION=1.9.1
+  - export VERSION=`xmlstarlet sel -N x=http://maven.apache.org/POM/4.0.0 -t -v 'x:project/x:version' pom.xml`
 
 jobs:
   include:
@@ -25,33 +24,29 @@ jobs:
       - HTTP_PORT=32733
       - HTTPS_PORT=32734
     script: 
-      - docker build -f ${BASE_IMAGE}/Dockerfile -t ${REPO}:${VERSION} ${BASE_IMAGE}/
+      - docker build --build-arg VERSION=${VERSION} -f ${BASE_IMAGE}/Dockerfile -t ${REPO}:${VERSION} ${BASE_IMAGE}/
       - docker run --name 'pwm' -d -p ${HTTP_PORT}:8080 -p ${HTTPS_PORT}:8443 ${REPO}:${VERSION}
       - sleep 10
       - docker logs pwm
       - docker exec pwm /bin/bash -c "curl -i http://localhost:8080"
     after_success: 
-      - if [[ $TRAVIS_PULL_REQUEST != "false" ]; then
-          echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin;
-          docker tag ${REPO}:${VERSION} ${REPO}:$TAG;
-          docker push ${REPO}:${TAG};
-          docker push ${REPO}:${VERSION};
-        fi
+      - echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
+      - docker tag ${REPO}:${VERSION} ${REPO}:$TAG
+      - docker push ${REPO}:${TAG}
+      - docker push ${REPO}:${VERSION}
   - stage: Build
     env:
       - BASE_IMAGE=alpine
       - HTTP_PORT=32735
       - HTTPS_PORT=32736
     script: 
-      - docker build -f ${BASE_IMAGE}/Dockerfile -t ${REPO}:${VERSION}-${BASE_IMAGE} ${BASE_IMAGE}/
+      - docker build --build-arg VERSION=${VERSION} -f ${BASE_IMAGE}/Dockerfile -t ${REPO}:${VERSION}-${BASE_IMAGE} ${BASE_IMAGE}/
       - docker run --name "pwm-${BASE_IMAGE}" -d -p ${HTTP_PORT}:8080 -p ${HTTPS_PORT}:8443 ${REPO}:${VERSION}-${BASE_IMAGE}
       - sleep 10
       - docker logs pwm-${BASE_IMAGE}
       - docker exec pwm-${BASE_IMAGE} /bin/bash -c "curl -i http://localhost:8080"
     after_success:
-      - if [[ $TRAVIS_PULL_REQUEST != "false" ]; then
-          echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin;
-          docker tag ${REPO}:${VERSION}-${BASE_IMAGE} ${REPO}:${ALPINE_TAG};
-          docker push ${REPO}:${ALPINE_TAG};
-          docker push ${REPO}:${VERSION}-${BASE_IMAGE};
-        fi
+      - echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
+      - docker tag ${REPO}:${VERSION}-${BASE_IMAGE} ${REPO}:${ALPINE_TAG}
+      - docker push ${REPO}:${ALPINE_TAG}
+      - docker push ${REPO}:${VERSION}-${BASE_IMAGE}
