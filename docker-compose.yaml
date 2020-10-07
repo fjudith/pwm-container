@@ -23,7 +23,7 @@ services:
     environment:
       - PHPLDAPADMIN_LDAP_HOSTS=ldap-host
   pwm:
-    image: fjudith/pwm:latest
+    image: fjudith/pwm:1.9.1-alpine
     ports:
       - "8080:8080"
     hostname: ldap
