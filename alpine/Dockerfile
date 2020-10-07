@@ -24,11 +24,11 @@ ENV MYSQL_DRIVER_VERSION=8.0.15 \
 RUN addgroup -g 1234 pwm && \
     adduser -D -u 1234 -G pwm pwm
 
+# Create application directory
 RUN mkdir -p $PWM_APPLICATIONPATH
 
 # Install additional packages
 RUN apk add --no-cache xmlstarlet curl unzip && \
-    cd /tmp && \
     cd ${CATALINA_HOME}/lib && \
     curl -O https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_DRIVER_VERSION}/mysql-connector-java-${MYSQL_DRIVER_VERSION}.jar && \
     curl -O https://jdbc.postgresql.org/download/postgresql-${POSTGRES_DRIVER_VERSION}.jar && \
