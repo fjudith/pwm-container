@@ -16,7 +16,6 @@ before_install:
   - sudo apt-get update -y
   - sudo apt-get install xmlstarlet
   - wget https://raw.githubusercontent.com/pwm-project/pwm/master/pom.xml
-  - cat pom.xml
   - export VERSION=`xmlstarlet sel -N x=http://maven.apache.org/POM/4.0.0 -t -v "x:project/x:version" pom.xml`
 
 jobs:
