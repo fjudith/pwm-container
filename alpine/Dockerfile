@@ -1,6 +1,6 @@
-FROM docker.io/amd64/maven:3-openjdk-11 AS builder
-
 ARG VERSION
+
+FROM docker.io/amd64/maven:3-openjdk-11 AS builder
 
 RUN apt-get update -y && apt-get  -y --no-install-recommends install git && \
     git clone https://github.com/pwm-project/pwm.git
