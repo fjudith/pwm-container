@@ -1,29 +1,86 @@
-version: '2'
+version: "3.7"
+
 services:
-  ldap:
-    image: osixia/openldap:1.2.0
+  freeipa:
+    image: freeipa/freeipa-server:centos-8
+    container_name: freeipa
+    hostname: freeipa.example.com
+    dns: 
+      - 127.0.0.1
+    restart: unless-stopped
+    environment:
+      - PASSWORD=passw0rd  # default login
+      - IPA_SERVER_HOSTNAME=freeipa.example.com
+    tty: true
+    read_only: true
+    stdin_open: true
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - freeipa-data:/data
+    sysctls:
+      - net.ipv6.conf.lo.disable_ipv6=0
+      - net.ipv6.conf.all.disable_ipv6=0
+    security_opt:
+      - seccomp:unconfined
+    command:
+      - -U
+      - --domain=example.com
+      - --realm=example.com
+      - --http-pin=P4ssw0rd
+      - --dirsrv-pin=P4ssw0rd
+      - --ds-password=P4ssw0rd
+      - --admin-password=P4ssw0rd
+      #- --no-host-dns
+      #- --no-dnssec-validation
+      - --setup-dns
+      - --auto-forwarders
+      - --allow-zone-overlap
+      - --unattended
     ports:
+      - "53:53/udp"
+      - "53:53"
+      - "80:80"
+      - "443:443"
       - "389:389"
       - "636:636"
-    hostname: ldap
-    volumes:
-      - /home/docker/openldap/data:/var/lib/ldap
-      - /home/docker/openldap/etc:/etc/ldap/slapd.d
-    restart: always
-    environment:
-      - LDAP_ORGANISATION=example
-      - LDAP_DOMAIN=example.com  # cn=admin,dc=example,dc=com
-      - LDAP_ADMIN_PASSWORD=passw0rd  # default login
+      - "88:88"
+      - "464:464"
+      - "88:88/udp"
+      - "464:464/udp"
+      - "123:123/udp"
+      - "7389:7389"
+      - "9443:9443"
+      - "9444:9444"
+      - "9445:9445"  
+
   phpldpaadmin:
     image: osixia/phpldapadmin:0.7.1
-    links:
-      - ldap:ldap-host
+    container_name: phpldpaadmin
+    hostname: phpldpaadmin.example.com
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=freeipa
     ports:
       - "6443:443"
+ 
+  postgres:
+    image: amd64/postgres:9-alpine
+    container_name: postgres
+    hostname: postgres.example.com
     environment:
-      - PHPLDAPADMIN_LDAP_HOSTS=ldap-host
+      - POSTGRES_DB=pwm
+      - POSTGRES_USER=pwm
+      - POSTGRES_PASSWORD=P4ssw0rd
+  
   pwm:
-    image: fjudith/pwm:1.9.1-alpine
+    image: fjudith/pwm:1.9.1
+    container_name: pwm
+    hostname: pwm
     ports:
       - "8080:8080"
-    hostname: ldap
+    
+
+volumes:
+  freeipa-data:
