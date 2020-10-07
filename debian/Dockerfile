@@ -31,7 +31,7 @@ RUN mkdir -p $PWM_APPLICATIONPATH
 
 # Install additional packages
 RUN apt-get update -y && \
-    apt-get install -y --no-install-recommends unzip xmlstarlet curl && \
+    apt-get install -y --no-install-recommends xmlstarlet curl unzip && \
     cd ${CATALINA_HOME}/lib && \
     curl -O https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_DRIVER_VERSION}/mysql-connector-java-${MYSQL_DRIVER_VERSION}.jar && \
     curl -O https://jdbc.postgresql.org/download/postgresql-${POSTGRES_DRIVER_VERSION}.jar && \
@@ -49,7 +49,6 @@ RUN cd /tmp && \
     unzip /tmp/pwm-.war -d  ${PWM_HOME} && \
     rm -f /tmp/pwm.war && \
     chmod a+x ${PWM_HOME}/WEB-INF/command.sh
-
 
 # Update server.xml to set pwm webapp to root
 RUN cd $CATALINA_HOME && \
