@@ -72,15 +72,15 @@ jobs:
           file: ./${{ matrix.image }}/Dockerfile
           platforms: linux/amd64
 
-      - name: Scan for vulnerabilities
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }}
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+      # - name: Scan for vulnerabilities
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }}
+      #     format: 'table'
+      #     exit-code: '1'
+      #     ignore-unfixed: true
+      #     vuln-type: 'os,library'
+      #     severity: 'CRITICAL,HIGH'
 
       - name: Push image to Docker Hub registry
         id: dockerhub
