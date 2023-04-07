@@ -75,7 +75,7 @@ services:
       - POSTGRES_PASSWORD=P4ssw0rd
   
   pwm:
-    image: fjudith/pwm:1.9.1
+    image: fjudith/pwm:${APP_VERSION:-'2.0.5'}
     container_name: pwm
     hostname: pwm
     ports:
