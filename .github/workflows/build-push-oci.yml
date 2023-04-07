@@ -62,14 +62,14 @@ jobs:
         id: container_image_build
         uses: docker/build-push-action@v4
         with:
-          context: ./src/${{ matrix.image }}
+          context: ./${{ matrix.image }}
           load: true
           build-args:
             IMAGE_VERSION="${{ env.VERSION }}"
           tags: >-
             docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }},
             ghcr.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }}
-          file: ./src/${{ matrix.image }}/Dockerfile
+          file: ./${{ matrix.image }}/Dockerfile
           platforms: linux/amd64
 
       - name: Scan for vulnerabilities
@@ -86,24 +86,24 @@ jobs:
         id: dockerhub
         uses: docker/build-push-action@v4
         with:
-          context: ./src/${{ matrix.image }}
+          context: ./${{ matrix.image }}
           push: true
           tags: >-
             docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.VERSION }}-${{ matrix.image }},
             docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }},
             docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ matrix.image }}
-          file: ./src/${{ matrix.image }}/Dockerfile
+          file: ./${{ matrix.image }}/Dockerfile
           platforms: linux/amd64
       
       - name: Push image to GitHub Container Registry
         id: ghcr
         uses: docker/build-push-action@v4
         with:
-          context: ./src/${{ matrix.image }}
+          context: ./${{ matrix.image }}
           push: true
           tags: >-
             ghcr.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.VERSION }}-${{ matrix.image }},
             ghcr.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }},
             ghcr.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ matrix.image }}
-          file: ./src/${{ matrix.image }}/Dockerfile
+          file: ./${{ matrix.image }}/Dockerfile
           platforms: linux/amd64
