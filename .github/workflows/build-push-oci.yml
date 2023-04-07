@@ -65,7 +65,7 @@ jobs:
           context: ./${{ matrix.image }}
           load: true
           build-args:
-            APP_VERSION="${{ env.VERSION }}"
+            APP_VERSION=${{ env.VERSION }}
           tags: >-
             docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }},
             ghcr.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }}
