@@ -2,14 +2,11 @@ FROM docker.io/amd64/maven:3-openjdk-11 AS builder
 
 ARG APP_VERSION
 
-RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends \
-        'git' \
-    && git clone \
+RUN git clone \
         -b "v$(echo ${APP_VERSION} | sed -E 's#\.#_#g')" \
         --single-branch https://github.com/pwm-project/pwm.git \
     && cd pwm/ \
-    && mvn package -Dmaven.test.skip=true \
+    && mvn -B verify --file pom.xml \
     && ls -l webapp/target/
 
 
@@ -26,14 +23,14 @@ ENV MYSQL_DRIVER_VERSION=8.0.32 \
     MONGODB_DRIVER_VERSION=3.9.1 \
     MARIADB_DRIVER_VERSION=3.1.3 \
     PWM_HOME=${CATALINA_HOME}/webapps/pwm \
-    PWM_PATH=/usr/share/pwm
+    PWM_APPLICATIONPATH=/usr/share/pwm
 
 # Create pwm user
 RUN addgroup -g 1234 pwm \
     && adduser -D -u 1234 -G pwm pwm
 
 # Install additional packages
-RUN mkdir -vp ${PWM_PATH} \
+RUN mkdir -vp ${PWM_APPLICATIONPATH} \
     && apk add --no-cache \
         'xmlstarlet' \
         'curl' \
@@ -71,7 +68,7 @@ COPY docker-entrypoint.sh /
 # Fix permissions
 RUN chmod +x /docker-entrypoint.sh \
     && chown -R pwm:pwm $CATALINA_HOME \
-    && chown -R pwm:pwm $PWM_PATH
+    && chown -R pwm:pwm $PWM_APPLICATIONPATH
 
 USER pwm
 

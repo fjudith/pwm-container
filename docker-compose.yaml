@@ -2,11 +2,13 @@ version: "3.7"
 
 services:
   freeipa:
-    image: freeipa/freeipa-server:centos-8
+    image: docker.io/freeipa/freeipa-server:almalinux-9
     container_name: freeipa
     hostname: freeipa.example.com
     dns: 
       - 127.0.0.1
+      - 1.1.1.1
+      - 1.0.0.1
     restart: unless-stopped
     environment:
       - PASSWORD=passw0rd  # default login
@@ -56,15 +58,6 @@ services:
       - "9444:9444"
       - "9445:9445"  
 
-  phpldpaadmin:
-    image: osixia/phpldapadmin:0.7.1
-    container_name: phpldpaadmin
-    hostname: phpldpaadmin.example.com
-    environment:
-      - PHPLDAPADMIN_LDAP_HOSTS=freeipa
-    ports:
-      - "6443:443"
- 
   postgres:
     image: amd64/postgres:9-alpine
     container_name: postgres
@@ -75,11 +68,16 @@ services:
       - POSTGRES_PASSWORD=P4ssw0rd
   
   pwm:
-    image: fjudith/pwm:${APP_VERSION:-'2.0.5'}
+    build:
+      context: ./debian
+      args:
+        APP_VERSION: ${APP_VERSION:-2.0.5}
+    image: oci.local/project/pwm:${APP_VERSION:-2.0.5}-debian
     container_name: pwm
     hostname: pwm
     ports:
       - "8080:8080"
+      - "8443:8443"
     
 
 volumes:

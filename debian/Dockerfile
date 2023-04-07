@@ -2,14 +2,11 @@ FROM docker.io/amd64/maven:3-openjdk-11 AS builder
 
 ARG APP_VERSION
 
-RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends \
-        'git' \
-    && git clone \
+RUN git clone \
         -b "v$(echo ${APP_VERSION} | sed -E 's#\.#_#g')" \
         --single-branch https://github.com/pwm-project/pwm.git \
     && cd pwm/ \
-    && mvn package -Dmaven.test.skip=true \
+    && mvn -B verify --file pom.xml \
     && ls -l webapp/target/
 
 
@@ -21,29 +18,29 @@ ARG APP_VERSION
 
 LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
 
-ENV MYSQL_DRIVER_VERSION=8.0.32 \
+ENV MYSQL_DRIVER_VERSION=8.0.15 \
     POSTGRES_DRIVER_VERSION=42.6.0 \
     MONGODB_DRIVER_VERSION=3.9.1 \
     MARIADB_DRIVER_VERSION=3.1.3 \
     PWM_HOME=${CATALINA_HOME}/webapps/pwm \
-    PWM_PATH=/usr/share/pwm
+    PWM_APPLICATIONPATH=/usr/share/pwm
 
 # Create pwm user
 RUN groupadd --system --gid 1234 pwm && \
 	useradd --system --create-home --shell /bin/bash --gid 1234 --uid 1234 pwm
 
 # Install additional packages
-RUN mkdir -vp ${PWM_PATH} \
+RUN mkdir -vp ${PWM_APPLICATIONPATH} \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
         'xmlstarlet' \
         'curl' \
         'unzip' \
     && cd ${CATALINA_HOME}/lib \
-    && curl -O https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_DRIVER_VERSION}/mysql-connector-java-${MYSQL_DRIVER_VERSION}.jar \
-    && curl -O https://jdbc.postgresql.org/download/postgresql-${POSTGRES_DRIVER_VERSION}.jar \
+    && curl -L -O https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_DRIVER_VERSION}/mysql-connector-java-${MYSQL_DRIVER_VERSION}.jar \
+    && curl -L -O https://jdbc.postgresql.org/download/postgresql-${POSTGRES_DRIVER_VERSION}.jar \
     && curl -L -O https://oss.sonatype.org/content/repositories/releases/org/mongodb/mongo-java-driver/${MONGODB_DRIVER_VERSION}/mongo-java-driver-${MONGODB_DRIVER_VERSION}.jar \
-    && curl -O https://downloads.mariadb.com/Connectors/java/connector-java-${MARIADB_DRIVER_VERSION}/mariadb-java-client-${MARIADB_DRIVER_VERSION}.jar \
+    && curl -L -O https://downloads.mariadb.com/Connectors/java/connector-java-${MARIADB_DRIVER_VERSION}/mariadb-java-client-${MARIADB_DRIVER_VERSION}.jar \
     && apt-get remove -y --purge curl \
     && apt-get autoremove -y --purge \
     && apt-get clean \
@@ -75,7 +72,7 @@ COPY docker-entrypoint.sh /
 # Fix permissions
 RUN chmod +x /docker-entrypoint.sh \
     && chown -R pwm:pwm $CATALINA_HOME \
-    && chown -R pwm:pwm $PWM_PATH
+    && chown -R pwm:pwm $PWM_APPLICATIONPATH
 
 USER pwm
 
