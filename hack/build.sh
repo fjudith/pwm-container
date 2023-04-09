@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source make/libraries/custom-logger.sh -v
+source hack/libraries/custom-logger.sh -v
 
 ORGANIZATION=${ORGANIZATION:-'fjudith'}
 PROJECT_NAME=${PROJECT_NAME:-'pwm'}
