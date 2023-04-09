@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/fjudith/docker-pwm.svg?branch=master)](https://travis-ci.org/fjudith/docker-pwm)
+[![Container Images](https://github.com/fjudith/docker-pwm/actions/workflows/build-push-oci.yml/badge.svg)](https://github.com/fjudith/docker-pwm/actions/workflows/build-push-oci.yml)
 
 # Introduction
 
@@ -18,7 +18,7 @@ The Dockerfile builds from `tomcat:9-jre11-slim` see <https://hub.docker.com/r/a
 Run the PWM image:
 
 ```bash
-docker run --rm -it --name=pwm -p 8080:8080 fjudith/pwm
+docker run --rm -it --name=pwm -p 8080:8080 fjudith/pwm:alpine
 ```
 
 NOTE: Please allow few seconds for the application to start, especially if populating the database for the first time.
