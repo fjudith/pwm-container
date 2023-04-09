@@ -41,7 +41,7 @@ jobs:
       
       - name: Set ENV variables
         run: |
-          echo "APP_VERSION=$(cat ./VERSION)" >> $GITHUB_ENV
+          echo "VERSION=$(cat ./VERSION)" >> $GITHUB_ENV
           echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-8)" >> $GITHUB_ENV
 
       - name: Login to DockerHub
@@ -65,7 +65,7 @@ jobs:
           context: ./${{ matrix.image }}
           load: true
           build-args:
-            APP_VERSION=${{ env.APP_VERSION }}
+            VERSION=${{ env.VERSION }}
           tags: >-
             docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }},
             ghcr.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }}
@@ -89,7 +89,7 @@ jobs:
           context: ./${{ matrix.image }}
           push: true
           build-args:
-            APP_VERSION=${{ env.APP_VERSION }}
+            VERSION=${{ env.VERSION }}
           tags: >-
             docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.VERSION }}-${{ matrix.image }},
             docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }},
@@ -104,7 +104,7 @@ jobs:
           context: ./${{ matrix.image }}
           push: true
           build-args:
-            APP_VERSION=${{ env.APP_VERSION }}
+            VERSION=${{ env.VERSION }}
           tags: >-
             ghcr.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.VERSION }}-${{ matrix.image }},
             ghcr.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }},
