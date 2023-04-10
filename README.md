@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/fjudith/docker-pwm.svg?branch=master)](https://travis-ci.org/fjudith/docker-pwm)
+[![Container Images](https://github.com/fjudith/docker-pwm/actions/workflows/build-push-oci.yml/badge.svg)](https://github.com/fjudith/docker-pwm/actions/workflows/build-push-oci.yml)
 
 # Introduction
 
@@ -7,18 +7,18 @@ PWM is a free and opensource password self service application enabling end-user
 
 # Description
 
-The Dockerfile builds from `Tomcat:8-jre8` see https://hub.docker.com/_/tomcat/
+The Dockerfile builds from `tomcat:9-jre11-slim` see <https://hub.docker.com/r/amd64/tomcat/>
 
 # Version
 
-[`1.9.1`, `latest`](https://gihub.com/fjudith/pwm/tree/master)
+[`2.0.5`, `latest`](https://github.com/pwm-project/pwm/tree/v2_0_5)
 
 # Quick Start 
 
 Run the PWM image:
 
 ```bash
-docker run --rm -it --name=pwm -p 8080:8080 fjudith/pwm
+docker run --rm -it --name=pwm -p 8080:8080 fjudith/pwm:alpine
 ```
 
 NOTE: Please allow few seconds for the application to start, especially if populating the database for the first time.
@@ -34,14 +34,15 @@ Go to the `http://localhost:8080` or point to the IP or fully qualified name of 
 docker-machine ip default
 ```
 
-
 # Configuration
 
 # Database
+
 By default, PWM extends the LDAP schema. If you don't want to, the image supports linking to a `mongodb`, `mysql` or `postgres` database container.
 
 
 ## Persistent volume
+
 If you use this image in production, you'll probably want to persist the following locations in a volume.
 
 ```text

@@ -2,43 +2,37 @@ version: "3.7"
 
 services:
   freeipa:
-    image: freeipa/freeipa-server:centos-8
-    container_name: freeipa
-    hostname: freeipa.example.com
-    dns: 
-      - 127.0.0.1
-    restart: unless-stopped
-    environment:
-      - PASSWORD=passw0rd  # default login
-      - IPA_SERVER_HOSTNAME=freeipa.example.com
-    tty: true
-    read_only: true
-    stdin_open: true
-    privileged: true
     cap_add:
-      - NET_ADMIN
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - freeipa-data:/data
-    sysctls:
-      - net.ipv6.conf.lo.disable_ipv6=0
-      - net.ipv6.conf.all.disable_ipv6=0
-    security_opt:
-      - seccomp:unconfined
+      - SYS_TIME
     command:
       - -U
-      - --domain=example.com
-      - --realm=example.com
-      - --http-pin=P4ssw0rd
-      - --dirsrv-pin=P4ssw0rd
-      - --ds-password=P4ssw0rd
-      - --admin-password=P4ssw0rd
+      - --realm=${DOMAIN_NAME:-example.com}
+      - --domain=${DOMAIN_NAME:-example.com}
+      - --ds-password=${FREEIPA_PASSWORD:-V3ry1ns3cur3P455w0rd}
+      - --admin-password=${FREEIPA_PASSWORD:-V3ry1ns3cur3P455w0rd}
+      - --no-dnssec-validation
       #- --no-host-dns
-      #- --no-dnssec-validation
       - --setup-dns
       - --auto-forwarders
       - --allow-zone-overlap
       - --unattended
+    container_name: ipa
+    dns: 
+      - 127.0.0.1
+      - 1.1.1.1
+      - 1.0.0.1
+    domainname: ${DOMAIN_NAME:-example.com}
+    environment:
+      - IPA_SERVER_HOSTNAME=ipa.${DOMAIN_NAME:-example.com}
+      - IPA_SERVER_IP=10.254.254.3
+      - PASSWORD=${FREEIPA_PASSWORD:-V3ry1ns3cur3P455w0rd}  # default login
+    extra_hosts:
+      - "ipa.${DOMAIN_NAME:-example.com}:10.254.254.3"
+    hostname: ipa
+    image: docker.io/freeipa/freeipa-server:almalinux-9
+    networks:
+      pwm:
+        ipv4_address: 10.254.254.3
     ports:
       - "53:53/udp"
       - "53:53"
@@ -54,33 +48,60 @@ services:
       - "7389:7389"
       - "9443:9443"
       - "9444:9444"
-      - "9445:9445"  
+      - "9445:9445"
+    privileged: true
+    # read_only: true
+    restart: unless-stopped
+    # security_opt:
+    #   - seccomp:unconfined
+    stdin_open: true
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    tmpfs:
+      - /run
+      - /var/cache
+      - /tmp
+    tty: true
+    volumes:
+      - ./.docker/freeipa/data:/data:Z
+      # - ./.docker/freeipa/logs:/var/logs
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
 
-  phpldpaadmin:
-    image: osixia/phpldapadmin:0.7.1
-    container_name: phpldpaadmin
-    hostname: phpldpaadmin.example.com
-    environment:
-      - PHPLDAPADMIN_LDAP_HOSTS=freeipa
-    ports:
-      - "6443:443"
- 
   postgres:
-    image: amd64/postgres:9-alpine
     container_name: postgres
-    hostname: postgres.example.com
+    domainname: ${DOMAIN_NAME:-example.com}
     environment:
       - POSTGRES_DB=pwm
       - POSTGRES_USER=pwm
       - POSTGRES_PASSWORD=P4ssw0rd
-  
+    hostname: postgres
+    image: amd64/postgres:9-alpine
+    networks:
+      pwm:
+        ipv4_address: 10.254.254.4
+
   pwm:
-    image: fjudith/pwm:1.9.1
+    build:
+      context: ./${PWM_IMAGE:-debian}
+      args:
+        APP_VERSION: ${APP_VERSION:-2.0.5}
     container_name: pwm
+    domainname: ${DOMAIN_NAME:-example.com}
     hostname: pwm
+    image: oci.local/project/pwm:${APP_VERSION:-2.0.5}-${PWM_IMAGE:-debian}
+    networks:
+      pwm:
+        ipv4_address: 10.254.254.5
     ports:
       - "8080:8080"
+      - "8443:8443"
     
 
-volumes:
-  freeipa-data:
+networks:
+  pwm:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1300
+    ipam:
+      config:
+        - subnet: "10.254.254.0/24"
