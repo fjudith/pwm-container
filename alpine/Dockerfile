@@ -15,8 +15,13 @@ RUN git clone \
 FROM docker.io/amd64/tomcat:9-jre8-alpine
 
 ARG APP_VERSION
+ARG ORGANISATION
 
-LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
+LABEL org.opencontainers.image.title="PWM" \
+      org.opencontainers.image.description="PWM is an open source password self-service application for LDAP directories." \
+      org.opencontainers.image.version="${APP_VERSION}" \
+      org.opencontainers.image.authors="Florian JUDITH <florian.judith.b@gmail.com>" \
+      org.opencontainers.image.source="https://github.com/${ORGANISATION}/docker-pwm"
 
 ENV MYSQL_DRIVER_VERSION=8.0.32 \
     POSTGRES_DRIVER_VERSION=42.6.0 \

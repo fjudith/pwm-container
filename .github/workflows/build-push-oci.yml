@@ -66,6 +66,7 @@ jobs:
           load: true
           build-args:
             APP_VERSION=${{ env.APP_VERSION }}
+            ORGANIZATION=${{ env.ORGANIZATION }}
           tags: >-
             docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }},
             ghcr.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }}
@@ -90,6 +91,7 @@ jobs:
           push: true
           build-args:
             APP_VERSION=${{ env.APP_VERSION }}
+            ORGANIZATION=${{ env.ORGANIZATION }}
           tags: >-
             docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.APP_VERSION }}-${{ matrix.image }},
             docker.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }},
@@ -105,6 +107,7 @@ jobs:
           push: true
           build-args:
             APP_VERSION=${{ env.APP_VERSION }}
+            ORGANIZATION=${{ env.ORGANIZATION }}
           tags: >-
             ghcr.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.APP_VERSION }}-${{ matrix.image }},
             ghcr.io/${{ env.ORGANIZATION }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA_SHORT }}-${{ matrix.image }},
