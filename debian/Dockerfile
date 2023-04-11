@@ -21,7 +21,7 @@ LABEL org.opencontainers.image.title="PWM" \
       org.opencontainers.image.description="PWM is an open source password self-service application for LDAP directories" \
       org.opencontainers.image.version="${APP_VERSION}" \
       org.opencontainers.image.authors="Florian JUDITH <florian.judith.b@gmail.com>" \
-      org.opencontainers.image.source="https://github.com/${ORGANISATION}/docker-pwm"
+      org.opencontainers.image.source="https://github.com/${ORGANISATION}/pwm-container"
 
 ENV MYSQL_DRIVER_VERSION=8.0.15 \
     POSTGRES_DRIVER_VERSION=42.6.0 \

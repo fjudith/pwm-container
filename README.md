@@ -1,4 +1,4 @@
-[![Container Images](https://github.com/fjudith/docker-pwm/actions/workflows/build-push-oci.yml/badge.svg)](https://github.com/fjudith/docker-pwm/actions/workflows/build-push-oci.yml)
+[![Container Images](https://github.com/fjudith/pwm-container/actions/workflows/build-push-oci.yml/badge.svg)](https://github.com/fjudith/pwm-container/actions/workflows/build-push-oci.yml)
 
 # Introduction
 
